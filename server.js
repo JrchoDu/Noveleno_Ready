@@ -25,6 +25,7 @@ app.use('/api/', require('./routes/evacuation'));
 app.use('/api/', require('./routes/news'));
 app.use('/api/', require('./routes/notification'));
 app.use('/api/', require('./routes/message'));
+app.use('/api/', require('./routes/checklist'));
 
 
 const PORT = process.env.PORT || 5000;
