@@ -1,5 +1,6 @@
+// models/Checklist.js
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db'); // Adjust path as needed
+const { sequelize } = require('../config/db');
 
 const Checklist = sequelize.define('checklist', {
   id: {
@@ -11,16 +12,29 @@ const Checklist = sequelize.define('checklist', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'users', // Assuming your user table is named 'users'
+      model: 'users', 
       key: 'id'
     }
   },
   checklistData: {
-    type: DataTypes.JSONB, // Use JSONB for storing JSON data
+    type: DataTypes.JSON, 
+    allowNull: false
+  },
+  checklistType: {  // Added this field
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
     allowNull: false
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  tableName: 'checklists'
 });
 
 module.exports = Checklist;

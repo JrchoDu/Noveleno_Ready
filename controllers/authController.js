@@ -4,11 +4,11 @@ const User = require('../models/User');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword, fullname, birthday, streetNumber, streetName, barangay, contactNumber } = req.body;
+    const { email, password, confirmPassword, fullname, birthday, streetNumber, streetName, barangay, contactNumber } = req.body;
 
     console.log('Request Body:', req.body);
 
-    if (!username || !email || !password || !confirmPassword || !fullname || !birthday || !streetNumber || !streetName || !barangay || !contactNumber) {
+    if ( !email || !password || !confirmPassword || !fullname || !birthday || !streetNumber || !streetName || !barangay || !contactNumber) {
       return res.status(400).json({ msg: 'Please enter all fields' });
     }
 
@@ -53,7 +53,6 @@ exports.registerUser = async (req, res) => {
         res.json({
           token,
           email: user.email,
-          username: '',
           fullname: user.fullname,
           role: user.role,
           birthday: user.birthday,
@@ -109,7 +108,6 @@ exports.loginUser = async (req, res) => {
         res.json({
           token,
           email: user.email,
-          username: user.username,
           fullname: user.fullname,
           role: user.role,
           birthday: user.birthday,

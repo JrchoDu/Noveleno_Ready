@@ -1,4 +1,13 @@
 const User = require('../models/User');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // You can use any email service provider (e.g., SendGrid, SMTP)
+  auth: {
+    user: 'bartertechgether@gmail.com', // Your email address
+    pass: 'eawh ttpm uslk fcgr', // Your email password or app-specific password
+  },
+});
 
 exports.getUserCount = async (req, res) => {
   try {
@@ -22,7 +31,24 @@ exports.acceptUser = async (req, res) => {
 
     await user.update({ status: 1 });
 
-    res.json({ msg: `User accepted with ID ${id}` });
+    // Set up email options
+    const mailOptions = {
+      from: 'bartertechgether@gmail.com', // Sender address
+      to: user.email, // The user's email address
+      subject: 'Account Accepted',
+      text: `Hello ${user.fullname},\n\nYour account has been accepted! You can now log in and start using our services.\n\nYou can log in here: https://novelenoready.mesph.online/\n\nBest regards,\nNoveleta Ready`,
+    };
+
+    // Send email to the user
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error('Error sending email:', err.message);
+        return res.status(500).json({ error: 'Error sending acceptance email' });
+      } else {
+        console.log('Email sent:', info.response);
+        res.json({ msg: `User accepted with ID ${id} and email sent.` });
+      }
+    });
   } catch (error) {
     console.error('Error accepting user:', error.message);
     res.status(500).json({ error: 'Server error' });

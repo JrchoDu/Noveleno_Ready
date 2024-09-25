@@ -1,7 +1,9 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db'); 
+const { DataTypes, Model } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const News = sequelize.define('News', {
+class News extends Model {}
+
+News.init({
   title: {
     type: DataTypes.STRING,
     allowNull: false
@@ -21,7 +23,19 @@ const News = sequelize.define('News', {
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0  // Default to 0 for non-admins
+  },
+  expires_at: {
+    type: DataTypes.DATE,
+    allowNull: false,  // The expiration date must be defined
   }
+}, {
+  sequelize,
+  modelName: 'News',
 });
 
 module.exports = News;
