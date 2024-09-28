@@ -12,7 +12,7 @@ const generateOTP = () => {
 // Function to send SMS using Semaphore API
 const sendOTP = async (contactNumber, otpCode) => {
     const apiKey = '64659e5bb98d9c1a57469c9a27e079a3';
-    const senderName = 'SEMAPHORE';
+    const senderName = 'Noveleno';
     
     try {
         const response = await axios.post('https://api.semaphore.co/api/v4/messages', {
