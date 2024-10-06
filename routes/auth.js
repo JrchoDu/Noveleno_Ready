@@ -12,6 +12,8 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/usercount', getUserCount);
+router.get('/usercountpending', getNullStatusUserCount);
+router.get('/usercountNew', getRecentUsersCount);
 router.get('/userpending', getUsers);
 router.post('/acceptuser/:id', acceptUser);
 router.get('/users', getUserByEmail);
