@@ -19,13 +19,16 @@ const createContact = async (req, res) => {
     return res.status(400).json({ message: 'Name and contact number are required' });
   }
 
+  // Ensure contact_no is being passed correctly
+  console.log('Creating contact with name:', name, 'and contact_no:', contact_no); // Debugging log
+
   try {
     const newContact = await Contact.create({
       name,
       contact_no
     });
 
-    res.status(201).json(newContact);
+    res.status(201).json(newContact); // Return the created contact
   } catch (error) {
     res.status(500).json({ message: 'Failed to create contact', error: error.message });
   }
