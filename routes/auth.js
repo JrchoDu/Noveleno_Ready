@@ -13,8 +13,8 @@ const { createOTP, verifyOTP, resendOTP } = require('../controllers/otpControlle
 const router = express.Router();
 
 // User authentication routes
-router.post('/changepassword', editProfile);
-router.post('/updateprofile', changePassword);
+router.put('/changepassword', editProfile);
+router.put('/updateprofile', changePassword);
 router.post('/adminregister', registerAdmin);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
