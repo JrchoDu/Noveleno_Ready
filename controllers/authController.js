@@ -197,3 +197,81 @@ exports.loginUser = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+exports.editProfile = async (req, res) => {
+  try {
+    const { fullname, birthday, streetNumber, streetName, barangay, contactNumber } = req.body;
+    const userId = req.user.id; // Assuming you get the user ID from the JWT token
+
+    // Find the user
+    let user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Update user fields
+    user.fullname = fullname || user.fullname;
+    user.birthday = birthday || user.birthday;
+    user.streetNumber = streetNumber || user.streetNumber;
+    user.streetName = streetName || user.streetName;
+    user.barangay = barangay || user.barangay;
+    user.contactNumber = contactNumber || user.contactNumber;
+
+    // Save the updated user data
+    await user.save();
+
+    res.json({
+      msg: 'Profile updated successfully',
+      user: {
+        fullname: user.fullname,
+        birthday: user.birthday,
+        streetNumber: user.streetNumber,
+        streetName: user.streetName,
+        barangay: user.barangay,
+        contactNumber: user.contactNumber
+      }
+    });
+
+  } catch (err) {
+    console.error('Error in editProfile:', err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, repeatNewPassword } = req.body;
+    const userId = req.user.id; // Assuming you get the user ID from the JWT token
+
+    // Find the user
+    let user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Check if the current password is correct
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Incorrect current password' });
+    }
+
+    // Check if new passwords match
+    if (newPassword !== repeatNewPassword) {
+      return res.status(400).json({ msg: 'New passwords do not match' });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update the password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ msg: 'Password updated successfully' });
+
+  } catch (err) {
+    console.error('Error in changePassword:', err.message);
+    res.status(500).send('Server error');
+  }
+};

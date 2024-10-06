@@ -1,6 +1,6 @@
 const express = require('express');
 const { registerAdmin} = require('../controllers/authController');
-const { registerUser, loginUser } = require('../controllers/authController');
+const { registerUser, loginUser, changePassword, editProfile } = require('../controllers/authController');
 const { getUserCount, showAllUsers, deleteUser } = require('../controllers/userController');
 const { getUsers } = require('../controllers/pendingController');
 const { getUserCountWithNullStatus } = require('../controllers/pendingController');
@@ -13,7 +13,8 @@ const { createOTP, verifyOTP, resendOTP } = require('../controllers/otpControlle
 const router = express.Router();
 
 // User authentication routes
-
+router.post('/changepassword', editProfile);
+router.post('/updateprofile', changePassword);
 router.post('/adminregister', registerAdmin);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
