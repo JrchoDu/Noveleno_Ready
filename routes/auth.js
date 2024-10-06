@@ -1,7 +1,7 @@
 const express = require('express');
 const { registerAdmin} = require('../controllers/authController');
 const { registerUser, loginUser } = require('../controllers/authController');
-const { getUserCount, showAllUsers } = require('../controllers/userController');
+const { getUserCount, showAllUsers, deleteUser } = require('../controllers/userController');
 const { getUsers } = require('../controllers/pendingController');
 const { getUserCountWithNullStatus } = require('../controllers/pendingController');
 const { getUserCountLast14Days } = require('../controllers/pendingController');
@@ -25,6 +25,7 @@ router.get('/graph', getUserCountForGraph);
 router.post('/acceptuser/:id', acceptUser);
 router.get('/users', getUserByEmail);
 router.get('/allusers', showAllUsers); // New route for showing all users
+router.get('/deleteusers', deleteUser); // New route for showing all users
 
 // OTP routes
 router.post('/generate', createOTP); 

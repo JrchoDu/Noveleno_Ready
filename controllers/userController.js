@@ -88,3 +88,20 @@ exports.getUserByEmail = async (req, res) => {
   }
 };
 
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params; // Extract ID from request parameters
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    await user.destroy(); // Delete the user
+    res.json({ msg: `User with ID ${id} has been deleted.` });
+  } catch (error) {
+    console.error('Error deleting user:', error.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
