@@ -12,7 +12,7 @@ const Contact = sequelize.define('Contact', {
     allowNull: false
   },
   contact_no: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   createAt: {
