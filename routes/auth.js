@@ -4,6 +4,7 @@ const { getUserCount, showAllUsers } = require('../controllers/userController');
 const { getUsers } = require('../controllers/pendingController');
 const { getUserCountWithNullStatus } = require('../controllers/pendingController');
 const { getUserCountLast14Days } = require('../controllers/pendingController');
+const { getUserCountForGraph } = require('../controllers/pendingController');
 const { acceptUser } = require('../controllers/userController');
 const { getUserByEmail } = require('../controllers/userController');
 const { createOTP, verifyOTP, resendOTP } = require('../controllers/otpController'); // Import OTP controller
@@ -17,6 +18,7 @@ router.get('/usercount', getUserCount);
 router.get('/usercountpending', getUserCountWithNullStatus);
 router.get('/usercountNew', getUserCountLast14Days);
 router.get('/userpending', getUsers);
+router.get('/graph', getUserCountForGraph);
 router.post('/acceptuser/:id', acceptUser);
 router.get('/users', getUserByEmail);
 router.get('/allusers', showAllUsers); // New route for showing all users

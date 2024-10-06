@@ -47,3 +47,33 @@ exports.getUsers = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+exports.getUserCountForGraph = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query; // Optional filters for the date range
+
+    // Parse date inputs, or set defaults (last 12 months)
+    const start = startDate ? new Date(startDate) : new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+    const end = endDate ? new Date(endDate) : new Date();
+
+    const userCounts = await User.findAll({
+      attributes: [
+        [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'month'], // Group by month
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count'] // Count users
+      ],
+      where: {
+        createdAt: {
+          [Op.between]: [start, end], // Filter by date range
+        },
+        status: 1, // Filter by status = 1
+      },
+      group: [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt'))], // Group by month
+      order: [[Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'ASC']], // Sort in ascending order by month
+    });
+
+    res.json(userCounts);
+  } catch (err) {
+    console.error('Error in getUserCountForGraph:', err.message);
+    res.status(500).send('Server error');
+  }
+};
