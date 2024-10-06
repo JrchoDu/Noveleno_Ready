@@ -2,13 +2,7 @@ const News = require('../models/News');
 const User = require('../models/User');
 const { Op } = require('sequelize'); // Import Op for Sequelize operators
 
-// Helper function to calculate expiration date (e.g., 7 days from creation)
-const calculateExpirationDate = () => {
-  const expirationDays = 7; // News expires after 7 days (you can change this)
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + expirationDays);
-  return expirationDate;
-};
+
 
 class NewsController {
   // Get all news (filter out expired news and non-approved news)
@@ -121,9 +115,9 @@ class NewsController {
       }
 
 
-      // Calculate expiration date
-      const expires_at = calculateExpirationDate();
-
+      const expires_at = new Date();
+      expires_at.setDate(expires_at.getDate() + 30);
+      
       // Create news object
       const newNews = {
         title,
@@ -132,7 +126,7 @@ class NewsController {
         barangay,
         user_id: user.id,
         status,
-        expires_at,  // Set expiration date
+        expires_at: expires_at.toISOString(),  // Convert to ISO string if needed
       };
 
       // Save new news item to the database
