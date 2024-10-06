@@ -50,25 +50,16 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserCountForGraph = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query; // Optional filters for the date range
-
-    // Parse date inputs, or set defaults (last 12 months)
-    const start = startDate ? new Date(startDate) : new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-    const end = endDate ? new Date(endDate) : new Date();
-
     const userCounts = await User.findAll({
       attributes: [
-        [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'month'], // Group by month
-        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count'] // Count users
+        [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'month'], // Group by month in 'YYYY-MM' format
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count'], // Count users
       ],
       where: {
-        createdAt: {
-          [Op.between]: [start, end], // Filter by date range
-        },
-        status: 1, // Filter by status = 1
+        status: 1, // Only count users with status 1
       },
-      group: [Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt'))], // Group by month
-      order: [[Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')), 'ASC']], // Sort in ascending order by month
+      group: [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM')], // Group by month
+      order: [[Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'ASC']], // Sort by month ascending
     });
 
     res.json(userCounts);
