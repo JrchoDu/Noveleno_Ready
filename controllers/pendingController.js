@@ -1,6 +1,38 @@
 const { Sequelize, Op } = require('sequelize');
-const User = require('../models/User'); 
+const User = require('../models/User');
 
+exports.getUserCountForGraph = async (req, res) => {
+  try {
+    // Log message to track the start of the function
+    console.log("Fetching user counts for graph...");
+
+    const userCounts = await User.findAll({
+      attributes: [
+        [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'month'], // Group by month in 'YYYY-MM' format
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count'], // Count users
+      ],
+      where: {
+        status: 1, // Only count users with status 1
+      },
+      group: [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM')], // Group by month
+      order: [[Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'ASC']], // Sort by month ascending
+    });
+
+    // Log result to verify the query output
+    console.log("User counts fetched:", userCounts);
+
+    res.json(userCounts);
+  } catch (err) {
+    // Log the exact error details for debugging
+    console.error('Error in getUserCountForGraph:', err);
+
+    res.status(500).json({
+      error: 'Server error occurred while fetching user counts for the graph',
+      message: err.message,
+      stack: err.stack, // Added stack trace for more detailed error information
+    });
+  }
+};
 exports.getUserCountWithNullStatus = async (req, res) => {
   try {
     const count = await User.count({
@@ -44,27 +76,6 @@ exports.getUsers = async (req, res) => {
     res.status(200).json({ users: users });
   } catch (err) {
     console.error('Error in getUsers:', err.message);
-    res.status(500).send('Server error');
-  }
-};
-
-exports.getUserCountForGraph = async (req, res) => {
-  try {
-    const userCounts = await User.findAll({
-      attributes: [
-        [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'month'], // Group by month in 'YYYY-MM' format
-        [Sequelize.fn('COUNT', Sequelize.col('id')), 'count'], // Count users
-      ],
-      where: {
-        status: 1, // Only count users with status 1
-      },
-      group: [Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM')], // Group by month
-      order: [[Sequelize.fn('TO_CHAR', Sequelize.col('createdAt'), 'YYYY-MM'), 'ASC']], // Sort by month ascending
-    });
-
-    res.json(userCounts);
-  } catch (err) {
-    console.error('Error in getUserCountForGraph:', err.message);
     res.status(500).send('Server error');
   }
 };
