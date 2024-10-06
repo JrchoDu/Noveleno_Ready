@@ -25,7 +25,7 @@ router.get('/graph', getUserCountForGraph);
 router.post('/acceptuser/:id', acceptUser);
 router.get('/users', getUserByEmail);
 router.get('/allusers', showAllUsers); // New route for showing all users
-router.delete('/deleteusers:id', deleteUser); // New route for showing all users
+router.delete('/deleteusers/:id', deleteUser); // New route for showing all users
 
 // OTP routes
 router.post('/generate', createOTP); 
